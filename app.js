@@ -3,36 +3,43 @@ const mongoose = require("mongoose");
 const dotenv = require('dotenv');
 const cors = require('cors');
 
-// Charger les variables d'environnement avant tout
-dotenv.config();
-
 const app = express();
 
-// Middlewares
+// Config dotenv
+dotenv.config();
+
+// Activer CORS
 app.use(cors());
-app.use(express.json()); // pour lire req.body
 
-// Routes
-const categorieRouter = require("./routes/categorie.route");
-app.use('/api/categories', categorieRouter);
+// BodyParser Middleware
+app.use(express.json());
 
-// Test simple pour vérifier que le serveur fonctionne
+// Connexion à la base de données
+mongoose.connect(process.env.DATABASE)
+    .then(() => { console.log("DataBase Successfully Connected"); })
+    .catch(err => {
+        console.log("Unable to connect to database", err);
+        process.exit();
+    });
+
+// Route racine
 app.get("/", (req, res) => {
     res.send("bonjour");
 });
 
-// Connexion à la base de données
-mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("DataBase Successfully Connected ✅"))
-.catch(err => {
-    console.log("Unable to connect to database ❌", err);
-    process.exit();
-});
+// Import des routes
+const categorieRouter = require("./routes/categorie.route");
+const scategorieRouter = require("./routes/scategorie.route");
+const articleRouter = require("./routes/article.route");
 
-// Définir le port et démarrer le serveur
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
+// Utilisation des routes
+app.use('/api/categories', categorieRouter);
+app.use('/api/scategories', scategorieRouter);
+app.use('/api/articles', articleRouter);
+
+// Démarrage serveur
+app.listen(process.env.PORT, () => {
+    console.log(`Server is listening on port ${process.env.PORT}`);
 });
 
 module.exports = app;
