@@ -1,11 +1,13 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-// Catégories
+// Navbar
+import BasicExample from "./components/menu"; // Navbar pour la navigation
+
+// Pages
 import Insertcategorie from "./components/categories/Insertcategorie";
 import Listscategories from "./components/scategories/Listscategories";
 import Updatescategorie from "./components/scategories/Updatescategorie";
-
-// Articles (à créer si ce n'est pas déjà fait)
 import Insertarticle from "./components/articles/Insertarticle";
 import Listarticles from "./components/articles/Listarticles";
 import Updatearticle from "./components/articles/Updatearticle";
@@ -13,21 +15,27 @@ import Updatearticle from "./components/articles/Updatearticle";
 function App() {
   return (
     <Router>
+      {/* Navbar visible sur toutes les pages */}
+      <BasicExample />
+
       <Routes>
-        {/* Catégories */}
+        {/* Page d'accueil : redirection vers la liste des catégories */}
+        <Route path="/" element={<Navigate to="/listscategories" />} />
+
+        {/* Routes des catégories */}
         <Route path="/listscategories" element={<Listscategories />} />
         <Route path="/insertcategorie" element={<Insertcategorie />} />
-        <Route path="/updatescategorie" element={<Updatescategorie />} />
+        <Route path="/updatescategorie/:id" element={<Updatescategorie />} />
 
-        {/* Sous-catégories */}
+        {/* Routes des sous-catégories */}
         <Route path="/scategorieres" element={<Listscategories />} />
         <Route path="/insertscategorieres" element={<Insertcategorie />} />
-        <Route path="/updatescategorieres" element={<Updatescategorie />} />
+        <Route path="/updatescategorieres/:id" element={<Updatescategorie />} />
 
-        {/* Articles */}
+        {/* Routes des articles */}
         <Route path="/articles" element={<Listarticles />} />
         <Route path="/insertarticle" element={<Insertarticle />} />
-        <Route path="/updatearticle" element={<Updatearticle />} />
+        <Route path="/updatearticle/:id" element={<Updatearticle />} />
       </Routes>
     </Router>
   );
